@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Inicio - Itla Tv+";
+}
+
+<div class="container mt-5">
+    <div class="jumbotron text-center bg-primary text-white">
+        <h1 class="display-4">¡Bienvenido a Itla Tv+!</h1>
+        <p class="lead">Tu plataforma de streaming para disfrutar de las mejores series, ¡donde quieras, cuando quieras!</p>
+        <hr class="my-4">
+        <p>Explora nuestro catálogo de series, descubre nuevas productoras y disfruta de una amplia variedad de géneros.</p>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <img src="/1_bk2xIDUW9rwMB6248W6_4g.jpg" width="150px" height="150px" class="rounded-circle mb-3" alt="Series" />
+            <h3>Catálogo de Series</h3>
+            <p>Accede a un extenso catálogo de series organizadas por géneros y productoras. ¡Encuentra tu nueva serie favorita!</p>
+            <a href="@Url.Action("Series", "Series")" class="btn btn-primary">Explorar Series</a> <!-- Enlace actualizado -->
+        </div>
+        <div class="col-md-4 text-center">
+            <img src="plataformas-de-streaming.jpg_2064308522-974x547.jpg" width="150px" height="150px" class="rounded-circle mb-3" alt="Productoras" />
+            <h3>Productoras</h3>
+            <p>Conoce las mejores productoras que nos traen el contenido de calidad. ¡Descubre quién está detrás de tus series favoritas!</p>
+            <a href="@Url.Action("Index", "Productoras")" class="btn btn-primary">Ver Productoras</a> <!-- Enlace actualizado -->
+        </div>
+        <div class="col-md-4 text-center">
+            <img src="h3o-ahorra-dinero-planificando-ver-tus-series-favoritas.jpg" width="150px" height="150px" class="rounded-circle mb-3" alt="Géneros" />
+            <h3>Géneros</h3>
+            <p>Sumérgete en una amplia gama de géneros que van desde la comedia hasta el drama y la acción. ¡Siempre hay algo para ti!</p>
+            <a href="@Url.Action("Index", "Generos")" class="btn btn-primary">Explorar Géneros</a> <!-- Enlace actualizado -->
+        </div>
+    </div>
+</div>
+
+<footer class="bg-dark text-white text-center mt-5 py-3">
+    <p>&copy; 2024 Itla Tv+. Todos los derechos reservados.</p>
+</footer>

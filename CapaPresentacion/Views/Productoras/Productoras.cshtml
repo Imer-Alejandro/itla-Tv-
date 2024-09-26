@@ -1,0 +1,120 @@
+﻿@model IEnumerable<CapaDatos.Productora>
+
+@{
+    ViewData["Title"] = "Productoras - Itla Tv+";
+}
+
+<!-- Menú de navegación -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Itla Tv+</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("Index", "Home")">Inicio</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("Index", "Generos")">Géneros</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="@Url.Action("Productoras", "Productoras")">Productoras</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Contenedor principal -->
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="display-5">Listado de Productoras</h1>
+        <!-- Botón para abrir el modal de creación -->
+        <button class="btn btn-success" data-toggle="modal" data-target="#crearProductoraModal">Agregar Nueva Productora</button>
+    </div>
+
+    <!-- Tabla de Productoras -->
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tablaProductoras">
+                @foreach (var productora in Model)
+                {
+                        <tr>
+                            <th scope="row">@productora.Id</th>
+                            <td>@productora.Nombre</td>
+                            <td>
+                                 <!-- Botón para mostrar el formulario de edición -->
+                                <button class="btn btn-warning btn-sm" data-toggle="collapse" data-target="#editarForm-@productora.Id">Editar</button>
+                                <button class="btn btn-danger btn-sm" data-toggle="collapse" data-target="#eliminarForm-@productora.Id">Eliminar</button>
+
+                                 <!-- Formulario de edición -->
+                                <div id="editarForm-@productora.Id" class="collapse">
+                                    <form action="/Productoras/Editar" method="post">
+                                        <input type="hidden" name="Id" value="@productora.Id" />
+                                        <div class="form-group">
+                                            <label for="Nombre-@productora.Id">Nombre de la Productora</label>
+                                            <input type="text" class="form-control" id="Nombre-@productora.Id" name="Nombre" value="@productora.Nombre" required />
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Actualizar</button>
+                                        <button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#editarForm-@productora.Id">Cancelar</button>
+                                    </form>
+                                </div>
+
+                                 <!-- Formulario de eliminación -->
+                                <div id="eliminarForm-@productora.Id" class="collapse">
+                                    <form action="/Productoras/Eliminar" method="post">
+                                        <input type="hidden" name="Id" value="@productora.Id" />
+                                        <p>¿Estás seguro de que quieres eliminar esta productora?</p>
+                                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                                        <button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#eliminarForm-@productora.Id">Cancelar</button>
+                                    </form>
+                                </div>
+                
+                            </td>
+                        </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal para crear nueva productora -->
+<div class="modal fade" id="crearProductoraModal" tabindex="-1" role="dialog" aria-labelledby="crearProductoraModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="crearProductoraModalLabel">Agregar Nueva Productora</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Formulario para crear una nueva productora -->
+                <form id="crearProductoraForm" action="/Productoras/Crear" method="post">
+                    <div class="form-group">
+                        <label for="Nombre">Nombre de la Productora</label>
+                        <input type="text" class="form-control" id="Nombre" name="Nombre" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="bg-dark text-white text-center mt-5 py-3">
+    <p>&copy; 2024 Itla Tv+. Todos los derechos reservados.</p>
+</footer>
+
+<!-- Scripts de Bootstrap y jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+

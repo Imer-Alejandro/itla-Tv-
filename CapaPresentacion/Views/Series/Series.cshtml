@@ -1,0 +1,267 @@
+﻿@model IEnumerable<CapaDatos.Serie>
+
+@{
+    ViewData["Title"] = "Series - Itla Tv+";
+}
+
+<!-- Menú de navegación -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Itla Tv+</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("Index", "Home")">Inicio</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("Index", "Generos")">Géneros</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("Index", "Productoras")">Productoras</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Contenedor principal -->
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="display-5">Listado de Series</h1>
+        <!-- Botón para abrir el modal de creación -->
+        <button class="btn btn-success" data-toggle="modal" data-target="#crearSerieModal">Agregar Nueva Serie</button>
+    </div>
+
+   <!-- Formulario para filtrar las series -->
+    <form id="buscarSeriesForm">
+        <div class="form-group">
+            <label for="generoId">Género:</label>
+            <select name="generoId" class="form-control">
+                <option value="">Todos</option>
+                @foreach (var genero in ViewBag.Generos)
+                {
+                    <option value="@genero.Id">@genero.Nombre</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="productoraId">Productora:</label>
+            <select name="productoraId" class="form-control">
+                <option value="">Todas</option>
+                @foreach (var productora in ViewBag.Productoras)
+                {
+                    <option value="@productora.Id">@productora.Nombre</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
+
+    <!-- Tabla de Series -->
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Productora</th>
+                    <th scope="col">Género</th>
+                    <th scope="col">Video</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+          <tbody>
+                @foreach (var serie in Model)
+                {
+                    <tr>
+                        <td>@serie.Id</td>
+                        <td>@serie.Nombre</td>
+                        <td>@serie.Productora.Nombre</td>
+                        <td>@serie.Genero.Nombre</td>
+                        <td>
+                            <!-- Iframe para reproducir el video -->
+                            <iframe width="200" height="100" src="@serie.EnlaceVideo" frameborder="0" allowfullscreen></iframe>
+                        </td>
+                        <td>
+                            <!-- Botones de acción -->
+                            <button class="btn btn-warning btn-sm" data-toggle="collapse" data-target="#editarForm-@serie.Id">Editar</button>
+                            <button class="btn btn-danger btn-sm" data-toggle="collapse" data-target="#eliminarForm-@serie.Id">Eliminar</button>
+
+                            <div id="editarForm-@serie.Id" class="collapse">
+                                <form action="/Series/EditarBasico" method="post">
+                                    <input type="hidden" name="Id" value="@serie.Id" />
+                                    <div class="form-group">
+                                        <label for="Nombre-@serie.Id">Nombre de la Serie</label>
+                                        <input type="text" class="form-control" id="Nombre-@serie.Id" name="Nombre" value="@serie.Nombre" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Portada-@serie.Id">Portada (URL)</label>
+                                        <input type="text" class="form-control" id="Portada-@serie.Id" name="Portada" value="@serie.Portada" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="EnlaceVideo-@serie.Id">Enlace al Video</label>
+                                        <input type="text" class="form-control" id="EnlaceVideo-@serie.Id" name="EnlaceVideo" value="@serie.EnlaceVideo" required />
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Actualizar</button>
+                                    <button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#editarForm-@serie.Id">Cancelar</button>
+                                </form>
+                            </div>
+
+                            <!-- Formulario de eliminación -->
+                            <div id="eliminarForm-@serie.Id" class="collapse">
+                                <form action="/Series/Eliminar" method="post">
+                                    <input type="hidden" name="id" value="@serie.Id" />
+                                    <p>¿Estás seguro de que quieres eliminar esta serie?</p>
+                                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                                    <button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#eliminarForm-@serie.Id">Cancelar</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal para crear nueva serie -->
+<div class="modal fade" id="crearSerieModal" tabindex="-1" role="dialog" aria-labelledby="crearSerieModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="crearSerieModalLabel">Agregar Nueva Serie</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Formulario para crear una nueva serie -->
+                <form asp-action="Crear" method="post" id="crearSerieForm">
+                    <div class="form-group">
+                        <label for="Nombre">Nombre de la Serie</label>
+                        <input type="text" class="form-control" id="Nombre" name="Nombre" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="Portada">URL de la Portada</label>
+                        <input type="text" class="form-control" id="Portada" name="Portada" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="EnlaceVideo">Enlace al Video</label>
+                        <input type="text" class="form-control" id="EnlaceVideo" name="EnlaceVideo" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="ProductoraId">Productora</label>
+                        <select class="form-control" id="ProductoraId" name="ProductoraId" required>
+                            <option value="">-- Seleccionar Productora --</option>
+                            @foreach (var productora in ViewBag.Productoras)
+                            {
+                                    <option value="@productora.Id">@productora.Nombre</option>
+                            } 
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="GeneroId">Género</label>
+                        <select class="form-control" id="GeneroId" name="GeneroId" required>
+                            <option value="">-- Seleccionar Género --</option>
+                            @foreach (var genero in ViewBag.Generos)
+                            {
+                                    <option value="@genero.Id">@genero.Nombre</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal para mostrar los resultados -->
+<div class="modal fade" id="resultadosModal" tabindex="-1" role="dialog" aria-labelledby="resultadosModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resultadosModalLabel">Resultados de la búsqueda</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Productora</th>
+                            <th>Género</th>
+                            <th>Video</th>
+                        </tr>
+                    </thead>
+                    <tbody id="seriesResultados">
+                        <!-- Aquí se insertarán los resultados dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<footer class="bg-dark text-white text-center mt-5 py-3">
+    <p>&copy; 2024 Itla Tv+. Todos los derechos reservados.</p>
+</footer>
+
+<!-- Scripts de Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Evento para enviar el formulario de búsqueda por AJAX
+        $("#buscarSeriesForm").on("submit", function (e) {
+            e.preventDefault(); 
+
+            // Obtener los valores de los selectores
+            var generoId = $('select[name="generoId"]').val();
+            var productoraId = $('select[name="productoraId"]').val();
+
+            // Realizar la petición AJAX
+            $.ajax({
+                url: '@Url.Action("FiltrarSeries", "Series")',  // Ruta del controlador
+                type: 'GET',
+                data: {
+                    generoId: generoId,
+                    productoraId: productoraId
+                },
+                success: function (data) {
+                    // Limpiar los resultados anteriores
+                    $("#seriesResultados").empty();
+
+                    // Rellenar la tabla con los resultados recibidos
+                    $.each(data, function (index, serie) {
+                        $("#seriesResultados").append(
+                            "<tr>" +
+                            "<td>" + serie.id + "</td>" +
+                            "<td>" + serie.nombre + "</td>" +
+                            "<td>" + serie.productora.nombre + "</td>" +
+                            "<td>" + serie.genero.nombre + "</td>" +
+                            "<td><iframe width='120' height='90' src='" + serie.enlaceVideo + "' frameborder='0' allowfullscreen></iframe></td>" +
+                            "</tr>"
+                        );
+                    });
+
+                    // Mostrar el modal con los resultados
+                    $("#resultadosModal").modal('show');
+                },
+                error: function () {
+                    alert("Error al cargar los datos.");
+                }
+            });
+        });
+    });
+</script>
